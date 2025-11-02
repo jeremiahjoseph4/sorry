@@ -20,17 +20,17 @@ document.addEventListener('click', function(event) {
 });
 
 // Send message functionality
-document.querySelector('.send-button').addEventListener('click', sendMessage);
+document.querySelector('.mobile-send').addEventListener('click', sendMessage);
 
 // Allow sending message with Enter key
-document.querySelector('.chat-input input').addEventListener('keypress', function(e) {
+document.querySelector('.mobile-input').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         sendMessage();
     }
 });
 
 function sendMessage() {
-    const input = document.querySelector('.chat-input input');
+    const input = document.querySelector('.mobile-input');
     const message = input.value.trim();
     
     if (message) {
@@ -48,19 +48,20 @@ function sendMessage() {
             <div class="message-time">${timeString}</div>
         `;
         
-        // Add message to chat
-        document.querySelector('.chat-messages').appendChild(messageElement);
+        // Add message to chat at the bottom (visually appears at top due to flex-direction: column-reverse)
+        const chatMessages = document.querySelector('.chat-messages');
+        chatMessages.insertBefore(messageElement, chatMessages.firstChild);
         
         // Clear input
         input.value = '';
         
-        // Scroll to bottom
-        document.querySelector('.chat-messages').scrollTop = document.querySelector('.chat-messages').scrollHeight;
+        // Keep scroll at bottom to see newest messages
+        chatMessages.scrollTop = 0;
     }
 }
 
-// Auto-scroll to bottom of chat
+// Auto-scroll to show newest messages (at the bottom visually)
 window.onload = function() {
     const chatMessages = document.querySelector('.chat-messages');
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatMessages.scrollTop = 0;
 };
