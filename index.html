@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Apology Machine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="floating-hearts" id="floatingHearts"></div>
@@ -21,28 +21,27 @@
             <h2>How are you feeling right now?</h2>
             <div class="mood-meter">
                 <div class="mood" data-mood="angry">
-                    <div class="mood-emoji">😠</div>
-                    <div class="mood-label">Angry</div>
+                    <span class="mood-emoji">😠</span>
+                    <span class="mood-label">Angry</span>
                 </div>
                 <div class="mood" data-mood="sad">
-                    <div class="mood-emoji">😢</div>
-                    <div class="mood-label">Sad</div>
+                    <span class="mood-emoji">😢</span>
+                    <span class="mood-label">Sad</span>
                 </div>
                 <div class="mood" data-mood="confused">
-                    <div class="mood-emoji">😕</div>
-                    <div class="mood-label">Confused</div>
+                    <span class="mood-emoji">😕</span>
+                    <span class="mood-label">Confused</span>
                 </div>
                 <div class="mood" data-mood="amused">
-                    <div class="mood-emoji">😏</div>
-                    <div class="mood-label">Amused</div>
+                    <span class="mood-emoji">😏</span>
+                    <span class="mood-label">Amused</span>
                 </div>
                 <div class="mood" data-mood="happy">
-                    <div class="mood-emoji">😊</div>
-                    <div class="mood-label">Happy</div>
+                    <span class="mood-emoji">😊</span>
+                    <span class="mood-label">Happy</span>
                 </div>
             </div>
             
-            <h2>Pull the lever for your personalized apology!</h2>
             <div class="lever-container">
                 <div class="lever" id="apologyLever"></div>
                 <div class="lever-base"></div>
@@ -50,7 +49,7 @@
             
             <div class="apology-display" id="apologyDisplay">
                 <div class="apology-text" id="apologyText">
-                    <span class="dancing-emoji">🤖</span> Waiting for your apology... <span class="dancing-emoji">🤖</span>
+                    <span class="dancing-emoji">🤖</span> Click a mood to start... <span class="dancing-emoji">🤖</span>
                 </div>
             </div>
             
@@ -61,13 +60,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
