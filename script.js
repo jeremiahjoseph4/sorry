@@ -55,8 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create floating hearts periodically
     setInterval(createFloatingHeart, 2000);
     
-    // Mood selection
+    // Mood selection with touch optimization
     document.querySelectorAll('.mood').forEach(mood => {
+        // Prevent default touch behavior
+        mood.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        });
+        
         mood.addEventListener('click', function() {
             // Remove previous selection
             document.querySelectorAll('.mood').forEach(m => m.classList.remove('selected'));
@@ -66,35 +71,81 @@ document.addEventListener('DOMContentLoaded', function() {
             currentMood = this.dataset.mood;
             hasSelectedMood = true;
             
+            // Haptic feedback if available
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
             // Show message
-            updateMessage(`I see you're feeling ${currentMood}. Pull the lever for your personalized apology!`);
+            updateMessage(`I see you're feeling ${currentMood}. Here's your personalized apology!`);
+            
+            // Generate apology immediately
+            generateApology();
+            
+            // Create emoji rain immediately
+            createEmojiRain();
         });
     });
     
-    // Lever pull
-    document.getElementById('apologyLever').addEventListener('click', function() {
+    // Lever pull with touch optimization
+    const lever = document.getElementById('apologyLever');
+    
+    lever.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        this.style.transform = 'rotate(30deg)';
+    });
+    
+    lever.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        this.style.transform = 'rotate(0deg)';
+        
+        if (!hasSelectedMood) {
+            updateMessage("Please select how you're feeling first!");
+            return;
+        }
+        
+        // Haptic feedback if available
+        if (navigator.vibrate) {
+            navigator.vibrate([50, 50, 50]);
+        }
+        
+        // Generate new apology
+        generateApology();
+        hasPulledLever = true;
+        
+        // Create emoji rain again
+        createEmojiRain();
+    });
+    
+    // Mouse events for desktop
+    lever.addEventListener('click', function() {
         if (!hasSelectedMood) {
             updateMessage("Please select how you're feeling first!");
             return;
         }
         
         // Animate lever
-        this.style.transform = 'translateX(-50%) rotate(30deg)';
+        this.style.transform = 'rotate(30deg)';
         
         setTimeout(() => {
-            this.style.transform = 'translateX(-50%) rotate(0deg)';
+            this.style.transform = 'rotate(0deg)';
         }, 300);
         
-        // Generate apology
+        // Generate new apology
         generateApology();
         hasPulledLever = true;
         
-        // Create emoji rain
+        // Create emoji rain again
         createEmojiRain();
     });
     
     // Reset button
     document.getElementById('resetBtn').addEventListener('click', function() {
+        // Haptic feedback if available
+        if (navigator.vibrate) {
+            navigator.vibrate(100);
+        }
+        
         resetMachine();
     });
 });
@@ -116,7 +167,13 @@ function createEmojiRain() {
     const emojis = emojiSets[currentMood];
     const container = document.querySelector('.container');
     
-    for (let i = 0; i < 20; i++) {
+    // Clear existing emoji rain
+    document.querySelectorAll('.emoji-rain').forEach(emoji => emoji.remove());
+    
+    // Create fewer emojis on mobile for performance
+    const emojiCount = window.innerWidth < 768 ? 15 : 20;
+    
+    for (let i = 0; i < emojiCount; i++) {
         setTimeout(() => {
             const emoji = document.createElement('div');
             emoji.className = 'emoji-rain';
@@ -166,8 +223,18 @@ function resetMachine() {
     currentMood = 'happy';
     
     // Reset message
-    updateMessage('<span class="dancing-emoji">🤖</span> Waiting for your apology... <span class="dancing-emoji">🤖</span>');
+    updateMessage('<span class="dancing-emoji">🤖</span> Click a mood to start... <span class="dancing-emoji">🤖</span>');
     
     // Remove any emoji rain
     document.querySelectorAll('.emoji-rain').forEach(emoji => emoji.remove());
 }
+
+// Prevent zoom on double tap for mobile
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false);
