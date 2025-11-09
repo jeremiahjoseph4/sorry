@@ -187,8 +187,8 @@ h1 {
     min-width: 60px;
     padding: 10px 5px;
     border-radius: 10px;
-    user-select: none;
-    -webkit-user-select: none;
+    position: relative;
+    z-index: 100;
 }
 
 .mood:hover {
@@ -204,14 +204,12 @@ h1 {
     font-size: 2.2rem;
     margin-bottom: 8px;
     display: block;
-    pointer-events: none;
 }
 
 .mood-label {
     font-size: 0.85rem;
     color: #666;
     font-weight: 500;
-    pointer-events: none;
 }
 
 .selected {
@@ -349,4 +347,28 @@ h1 {
     .reset-btn {
         padding: 12px 25px;
         font-size: 1rem;
-        wi
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .lever-container {
+        height: 70px;
+    }
+    
+    .lever {
+        width: 35px;
+        height: 60px;
+    }
+    
+    .lever-base {
+        width: 100px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    .m
