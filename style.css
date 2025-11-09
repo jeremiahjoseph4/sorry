@@ -2,7 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(255, 107, 107, 0.3);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 body {
@@ -16,6 +19,7 @@ body {
     overflow-x: hidden;
     position: relative;
     padding: 20px 0;
+    touch-action: manipulation;
 }
 
 .container {
@@ -85,6 +89,7 @@ h1 {
     transition: transform 0.3s ease;
     transform-origin: bottom center;
     box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+    touch-action: manipulation;
 }
 
 .lever:active {
@@ -160,6 +165,7 @@ h1 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
 }
 
 .reset-btn:hover {
@@ -182,13 +188,16 @@ h1 {
 .mood {
     text-align: center;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
     flex: 1;
     min-width: 60px;
-    padding: 10px 5px;
+    padding: 15px 8px;
     border-radius: 10px;
     position: relative;
     z-index: 100;
+    touch-action: manipulation;
+    background: transparent;
+    border: 2px solid transparent;
 }
 
 .mood:hover {
@@ -198,6 +207,7 @@ h1 {
 
 .mood:active {
     transform: scale(0.95);
+    background: rgba(255, 107, 107, 0.2);
 }
 
 .mood-emoji {
@@ -215,6 +225,7 @@ h1 {
 .selected {
     animation: bounce 0.5s ease;
     background: rgba(255, 107, 107, 0.15);
+    border-color: rgba(255, 107, 107, 0.3);
 }
 
 @keyframes bounce {
@@ -330,6 +341,11 @@ h1 {
         gap: 5px;
     }
     
+    .mood {
+        min-width: 55px;
+        padding: 12px 5px;
+    }
+    
     .mood-emoji {
         font-size: 2rem;
     }
@@ -371,4 +387,22 @@ h1 {
         font-size: 1.6rem;
     }
     
-    .m
+    .mood-emoji {
+        font-size: 1.8rem;
+    }
+    
+    .apology-display {
+        font-size: 0.95rem;
+    }
+    
+    .dancing-emoji {
+        font-size: 1.5rem;
+    }
+}
+
+/* Prevent zoom on input focus for iOS */
+@supports (-webkit-touch-callout: none) {
+    .container {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
