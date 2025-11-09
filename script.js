@@ -45,6 +45,78 @@ let currentMood = 'happy';
 let hasSelectedMood = false;
 let hasPulledLever = false;
 
+// Global functions for onclick handlers
+function selectMood(mood, element) {
+    // Remove previous selection
+    document.querySelectorAll('.mood').forEach(m => m.classList.remove('selected'));
+    
+    // Add selection to current mood
+    element.classList.add('selected');
+    currentMood = mood;
+    hasSelectedMood = true;
+    
+    // Haptic feedback if available
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Show message
+    updateMessage(`I see you're feeling ${currentMood}. Here's your personalized apology!`);
+    
+    // Generate apology immediately
+    generateApology();
+    
+    // Create emoji rain immediately
+    createEmojiRain();
+}
+
+function pullLever() {
+    const lever = document.getElementById('apologyLever');
+    
+    if (!hasSelectedMood) {
+        updateMessage("Please select how you're feeling first!");
+        return;
+    }
+    
+    // Animate lever
+    lever.style.transform = 'rotate(30deg)';
+    
+    setTimeout(() => {
+        lever.style.transform = 'rotate(0deg)';
+    }, 300);
+    
+    // Haptic feedback if available
+    if (navigator.vibrate) {
+        navigator.vibrate([50, 50, 50]);
+    }
+    
+    // Generate new apology
+    generateApology();
+    hasPulledLever = true;
+    
+    // Create emoji rain again
+    createEmojiRain();
+}
+
+function resetMachine() {
+    // Haptic feedback if available
+    if (navigator.vibrate) {
+        navigator.vibrate(100);
+    }
+    
+    // Reset mood selection
+    document.querySelectorAll('.mood').forEach(m => m.classList.remove('selected'));
+    hasSelectedMood = false;
+    hasPulledLever = false;
+    currentMood = 'happy';
+    
+    // Reset message
+    updateMessage('<span class="dancing-emoji">🤖</span> Click a mood to start... <span class="dancing-emoji">🤖</span>');
+    
+    // Remove any emoji rain
+    document.querySelectorAll('.emoji-rain').forEach(emoji => emoji.remove());
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     // Show intro bubble with animation
@@ -55,89 +127,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create floating hearts periodically
     setInterval(createFloatingHeart, 2000);
     
-    // Simple and reliable mood selection
+    // Add touch event listeners for mobile as backup
     const moods = document.querySelectorAll('.mood');
-    
     moods.forEach(mood => {
-        // Use onclick for maximum compatibility
-        mood.onclick = function(e) {
-            e.stopPropagation();
-            
-            // Remove previous selection
-            moods.forEach(m => m.classList.remove('selected'));
-            
-            // Add selection to current mood
-            this.classList.add('selected');
-            currentMood = this.dataset.mood;
-            hasSelectedMood = true;
-            
-            // Haptic feedback if available
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-            
-            // Show message
-            updateMessage(`I see you're feeling ${currentMood}. Here's your personalized apology!`);
-            
-            // Generate apology immediately
-            generateApology();
-            
-            // Create emoji rain immediately
-            createEmojiRain();
-        };
-        
-        // Also add touchstart for immediate mobile response
-        mood.addEventListener('touchstart', function(e) {
-            // Visual feedback
-            this.style.transform = 'scale(0.95)';
-        });
-        
         mood.addEventListener('touchend', function(e) {
-            // Reset visual feedback
-            this.style.transform = '';
+            e.preventDefault();
+            const moodType = this.getAttribute('data-mood');
+            selectMood(moodType, this);
         });
     });
     
-    // Lever handling
+    // Add touch event for lever as backup
     const lever = document.getElementById('apologyLever');
+    lever.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        pullLever();
+    });
     
-    lever.onclick = function(e) {
-        e.stopPropagation();
-        
-        if (!hasSelectedMood) {
-            updateMessage("Please select how you're feeling first!");
-            return;
-        }
-        
-        // Animate lever
-        this.style.transform = 'rotate(30deg)';
-        
-        setTimeout(() => {
-            this.style.transform = 'rotate(0deg)';
-        }, 300);
-        
-        // Haptic feedback if available
-        if (navigator.vibrate) {
-            navigator.vibrate([50, 50, 50]);
-        }
-        
-        // Generate new apology
-        generateApology();
-        hasPulledLever = true;
-        
-        // Create emoji rain again
-        createEmojiRain();
-    };
-    
-    // Reset button
-    document.getElementById('resetBtn').onclick = function() {
-        // Haptic feedback if available
-        if (navigator.vibrate) {
-            navigator.vibrate(100);
-        }
-        
+    // Add touch event for reset button as backup
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
         resetMachine();
-    };
+    });
 });
 
 function generateApology() {
@@ -203,20 +215,6 @@ function updateMessage(message) {
         apologyText.innerHTML = message;
         apologyText.classList.add('show-text');
     }, 300);
-}
-
-function resetMachine() {
-    // Reset mood selection
-    document.querySelectorAll('.mood').forEach(m => m.classList.remove('selected'));
-    hasSelectedMood = false;
-    hasPulledLever = false;
-    currentMood = 'happy';
-    
-    // Reset message
-    updateMessage('<span class="dancing-emoji">🤖</span> Click a mood to start... <span class="dancing-emoji">🤖</span>');
-    
-    // Remove any emoji rain
-    document.querySelectorAll('.emoji-rain').forEach(emoji => emoji.remove());
 }
 
 // Prevent zoom on double tap for mobile
